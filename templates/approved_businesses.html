@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section animate-fade-in py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Approved Businesses</h2>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered shadow-lg">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Business Name</th>
+                        <th>Owner Name</th>
+                        <th>Phone Number</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for business in finalorg_data %}
+                        {% for key, value in business.items() %}
+                            <tr>
+                                <td>{{ value['name'] }}</td>
+                                <td>{{ value['ownername'] }}</td>
+                                <td>{{ value['companyphone'] }}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm delete-btn" data-key="{{ key }}">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Select all delete buttons
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const key = button.getAttribute('data-key');
+
+                // Confirm deletion
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This action cannot be undone!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send a request to delete the business from Firebase
+                        fetch(`/delete-business/${key}`, {
+                            method: 'DELETE',
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'The business has been deleted.',
+                                    'success'
+                                ).then(() => {
+                                    // Reload the page to reflect changes
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    'Failed to delete the business. Please try again.',
+                                    'error'
+                                );
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire(
+                                'Error!',
+                                'An error occurred. Please try again.',
+                                'error'
+                            );
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -13,7 +13,7 @@ app.secret_key = b'\x9f\x15\x1c\xf4\x1a\xf3\xb8\xd2V\xd3\xe7\xd3\x95\x88\x03\xcb
 
 
 # Firebase setup
-cred = credentials.Certificate(r"F:\BBO\webportal\bbo24-88654-firebase-adminsdk-8fbjo-86539d93e7.json")
+cred = credentials.Certificate(r"F:\BBO\webportal\bbo\bbo24-88654-firebase-adminsdk-8fbjo-86539d93e7.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
